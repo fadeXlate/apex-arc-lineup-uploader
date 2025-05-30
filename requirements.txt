@@ -4,6 +4,7 @@ uvicorn
 pandas
 python-multipart
 slowapi
+pip install -r requirements.txt
 
 # Frontend (Streamlit)
 streamlit
