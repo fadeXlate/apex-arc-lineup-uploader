@@ -12,3 +12,4 @@ requests
 
 # Shared
 httpx
+pip install streamlit_app.py
