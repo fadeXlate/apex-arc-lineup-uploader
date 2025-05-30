@@ -1,0 +1,13 @@
+# Backend (FastAPI)
+fastapi
+uvicorn
+pandas
+python-multipart
+slowapi
+
+# Frontend (Streamlit)
+streamlit
+requests
+
+# Shared
+httpx
