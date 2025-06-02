@@ -1,0 +1,70 @@
+# File: deploy/github-actions.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
+      - name: Run linting
+        run: |
+          flake8 . --max-line-length=120 --exclude=venv
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          python -m unittest discover -s tests -p "test_*.py"
+
+  deploy:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Deploy to production
+        env:
+          # Add environment variables for your hosting provider (e.g., AWS_ACCESS_KEY_ID)
+          DEPLOYMENT_SECRET: ${{ secrets.DEPLOYMENT_SECRET }}
+        run: |
+          echo "Deploying to production (update with your hosting provider commands)"
+          # Example: Deploy to Heroku
+          # curl https://cli-assets.heroku.com/install.sh | sh
+          # heroku login -i
+          # heroku git:remote -a your-app-name
+          # git push heroku main
